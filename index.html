@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142b27">
+<meta name="description" content="Business Builder: an interactive business simulation from Behind the Business. Make 12 decisions and see how your business performs.">
+<title>Business Builder | Behind the Business</title>
+<style>
+:root{--ink:#18312c;--muted:#61716b;--paper:#f5f3ec;--card:#fffefa;--line:#deded3;--green:#286b50;--green2:#dceee2;--gold:#e9b949;--red:#b64138;--shadow:0 12px 34px rgba(24,49,44,.08)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+.site-header{background:var(--ink);color:#fff;padding:18px 20px}
+.header-inner{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:850;letter-spacing:.07em;font-size:.9rem;text-transform:uppercase}
+.brand span{display:block;color:#c5d8cd;font-size:.7rem;font-weight:600;letter-spacing:.15em;margin-top:2px}
+.header-tag{font-size:.82rem;color:#d4e1da}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 60px}
+.hero{background:linear-gradient(135deg,#18312c,#286b50);color:#fff;border-radius:22px;padding:clamp(24px,5vw,48px);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:250px;height:250px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-60px;top:-80px;box-shadow:0 0 0 35px rgba(255,255,255,.035),0 0 0 70px rgba(255,255,255,.025)}
+.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#bde2c9}
+h1{font-size:clamp(2.1rem,5vw,3.7rem);line-height:1.05;letter-spacing:-.045em;margin:12px 0 16px;max-width:700px}
+.hero p{max-width:690px;color:#e0eae4;font-size:1.05rem;margin:0}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.pill{border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 11px;font-size:.8rem;color:#f5fbf7}
+.intro-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin:20px 0}
+.panel,.game-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+h2,h3,p{margin-top:0}
+.panel h2{font-size:1.15rem;margin-bottom:8px}
+.panel p{color:var(--muted);margin-bottom:0}
+.start-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fact{background:#f0f2e9;border-radius:12px;padding:14px}
+.fact strong{display:block;font-size:1.35rem;line-height:1.3}
+.fact span{color:var(--muted);font-size:.8rem}
+.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.game-card{padding:clamp(18px,3vw,28px)}
+.status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}
+.status-label{font-size:.82rem;color:var(--muted);font-weight:700}
+.progress{height:7px;background:#e7e8df;border-radius:999px;overflow:hidden;margin:10px 0 22px}
+.progress span{height:100%;display:block;width:0;background:var(--green);transition:width .25s}
+.tag{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green2);padding:5px 9px;border-radius:999px}
+h2.question-title{font-size:clamp(1.45rem,3vw,2rem);line-height:1.18;letter-spacing:-.025em;margin:0 0 12px}
+.story{color:#52645d;margin-bottom:22px}
+.options{display:grid;gap:11px}
+.option{display:flex;gap:13px;align-items:flex-start;text-align:left;width:100%;padding:15px;border:1px solid var(--line);border-radius:13px;background:#fffefa;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.option:hover:not(:disabled),.option:focus-visible{border-color:var(--green);background:#f3f8f3;outline:3px solid #d5e9dc;outline-offset:1px}
+.option:active:not(:disabled){transform:scale(.995)}
+.option:disabled{cursor:default;opacity:.75}
+.option-letter{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:9px;background:#edf0e8;font-weight:850}
+.option-text{font-weight:700;line-height:1.4;padding-top:4px}
+.metrics-panel{position:sticky;top:16px}
+.metrics-panel h2{font-size:1.15rem;margin-bottom:3px}
+.small-muted{font-size:.8rem;color:var(--muted)}
+.metric{margin-top:17px}
+.metric-head{display:flex;justify-content:space-between;gap:8px;font-size:.87rem;font-weight:750;margin-bottom:6px}
+.metric-value{font-variant-numeric:tabular-nums}
+.bar{height:8px;background:#e8e9e0;border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;width:50%;background:var(--green);border-radius:999px;transition:width .25s,background .25s}
+.cash-box{margin-top:18px;padding:14px;background:#edf4ed;border-radius:12px}
+.cash-box .cash-label{font-size:.78rem;color:var(--muted);font-weight:700}
+.cash-box .cash-number{font-size:1.75rem;font-weight:900;letter-spacing:-.03em}
+.result{margin-top:22px;border-top:1px solid var(--line);padding-top:22px}
+.result h3{margin-bottom:6px;font-size:1.05rem}
+.result p{color:#52645d;margin-bottom:16px}
+.delta-list{display:grid;gap:8px;margin:14px 0 18px}
+.delta-row{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
+.up{color:#24764e;font-weight:800}.down{color:var(--red);font-weight:800}.flat{color:var(--muted);font-weight:800}
+.lesson-box{background:#f1f2e9;padding:15px;border-radius:12px;margin:16px 0}
+.lesson-box strong{display:block;margin-bottom:4px}
+.primary,.secondary{border:0;border-radius:11px;padding:13px 18px;font-weight:800;cursor:pointer}
+.primary{background:var(--green);color:white}
+.primary:hover{background:#1d563e}
+.secondary{background:#edf0e8;color:var(--ink);border:1px solid var(--line)}
+.primary:focus-visible,.secondary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.hidden{display:none!important}
+.report h2{font-size:1.8rem;line-height:1.15}
+.score{font-size:3rem;font-weight:950;letter-spacing:-.05em;color:var(--green);line-height:1.1;margin:12px 0}
+.outcome{padding:15px;border-radius:12px;background:#edf4ed;margin:16px 0}
+.outcome.warning{background:#fbefdc}
+.report-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.report-metric{padding:13px;background:#f1f2e9;border-radius:12px}
+.report-metric span{display:block;color:var(--muted);font-size:.8rem}
+.report-metric strong{font-size:1.2rem}
+.history{list-style:none;padding:0;display:grid;gap:10px}
+.history li{border:1px solid var(--line);border-radius:12px;padding:13px}
+.history li strong{display:block}
+.history li p{font-size:.9rem;color:var(--muted);margin:5px 0 0}
+.concepts{padding-left:20px}
+.concepts li{margin:8px 0}
+.site-footer{text-align:center;color:var(--muted);font-size:.82rem;padding:25px 15px 0}
+@media(max-width:800px){.intro-grid,.game-layout{grid-template-columns:1fr}.metrics-panel{position:static}.header-tag{display:none}}
+@media(max-width:440px){main{padding:17px 12px 40px}.hero{border-radius:16px}.panel,.game-card{border-radius:15px}.start-facts{grid-template-columns:1fr 1fr}.option{padding:12px}.report-metrics{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">Behind the Business <span>Learn by making decisions</span></div>
+    <div class="header-tag">A practical business simulation</div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">The owner's challenge</div>
+    <h1>Can you build a business that lasts?</h1>
+    <p>You’re in charge of Cornerstone Goods, a neighborhood shop with big potential and limited resources. Make 12 decisions, handle realistic trade-offs, and see how your choices compound over time.</p>
+    <div class="hero-pills"><span class="pill">12 decisions</span><span class="pill">4 choices each</span><span class="pill">5 business metrics</span><span class="pill">Multiple endings</span></div>
+  </section>
+
+  <section class="intro-grid" id="intro">
+    <div class="panel">
+      <h2>Your business starts here</h2>
+      <p>Cornerstone Goods sells locally made products and personalized gifts. You’ve been open for six months. Customers like your products, but sales are inconsistent and you haven’t built a reliable path to growth. Every choice has a cost, a benefit, or both.</p>
+    </div>
+    <div class="panel">
+      <h2>Starting position</h2>
+      <div class="start-facts">
+        <div class="fact"><strong>$20,000</strong><span>Available cash</span></div>
+        <div class="fact"><strong>55/100</strong><span>Customer trust</span></div>
+        <div class="fact"><strong>60/100</strong><span>Team morale</span></div>
+        <div class="fact"><strong>50/100</strong><span>Brand reputation</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="game-layout" aria-label="Business simulation game">
+    <div class="game-card">
+      <div id="question-area">
+        <div class="status-row"><span class="status-label" id="decision-count">DECISION 1 OF 12</span><span class="tag" id="stage-tag">Early stage</span></div>
+        <div class="progress" aria-label="Game progress"><span id="progress-bar"></span></div>
+        <h2 class="question-title" id="question-title"></h2>
+        <p class="story" id="question-story"></p>
+        <div class="options" id="options" role="group" aria-label="Choose your decision"></div>
+        <div class="result hidden" id="result" aria-live="polite">
+          <h3>Immediate consequence</h3><p id="result-immediate"></p>
+          <h3>Why it happened</h3><p id="result-why"></p>
+          <div class="lesson-box"><strong>Business principle</strong><span id="result-lesson"></span></div>
+          <h3>Updated business metrics</h3>
+          <div class="delta-list" id="delta-list"></div>
+          <div class="actions"><button class="primary" id="next-button">Next decision →</button></div>
+        </div>
+      </div>
+      <section id="report" class="report hidden" aria-live="polite"></section>
+    </div>
+
+    <aside class="panel metrics-panel" aria-label="Current business metrics">
+      <h2>Your business dashboard</h2>
+      <p class="small-muted">Live results from your decisions</p>
+      <div class="cash-box"><div class="cash-label">AVAILABLE CASH</div><div class="cash-number" id="cash-value">$20,000</div><div class="small-muted" id="cash-caption">Starting balance</div></div>
+      <div id="metric-list"></div>
+      <p class="small-muted" style="margin-top:18px">Cash is measured in dollars. The other metrics range from 0 to 100. Your earlier decisions can influence later outcomes.</p>
+    </aside>
+  </section>
+  <footer class="site-footer">Behind the Business · Fictional training simulation. Results are illustrative, not financial advice.</footer>
+</main>
+<script>
+"use strict";
+const initial = {cash:20000, trust:55, morale:60, reputation:50, growth:45};
+let state = {...initial};
+let turn = 0;
+let history = [];
+let gameOver = false;
+
+const metrics = [
+  {key:"trust",label:"Customer Trust"},
+  {key:"morale",label:"Team Morale"},
+  {key:"reputation",label:"Brand Reputation"},
+  {key:"growth",label:"Growth Potential"}
+];
+const questions = [
+ {title:"Your first marketing decision",story:"Foot traffic is lower than expected. You have $20,000 in cash, and you need more customers. A nearby competitor is offering steep discounts.",options:[
+  {label:"Run a large discount on everything",why:"Deep discounts can attract price-sensitive buyers, but they reduce gross margin and may teach customers to wait for sales.",d:{cash:-1800,trust:2,morale:0,reputation:1,growth:-2},immediate:"You get a short burst of sales, but profit per transaction falls.",lesson:"Revenue is not the same as profit."},
+  {label:"Ask customers what they want, then test a small targeted promotion",why:"Customer feedback reduces guesswork, while a limited test caps your downside and helps identify what converts.",d:{cash:-500,trust:5,morale:1,reputation:3,growth:7},immediate:"A modest campaign brings in useful feedback and a few new customers.",lesson:"Validate demand before committing significant money."},
+  {label:"Spend $5,000 on a flashy advertising campaign",why:"Broad advertising without proven messaging or conversion data risks paying to reach people who will not buy.",d:{cash:-5000,trust:0,morale:-1,reputation:2,growth:2},immediate:"More people see your shop, but sales are unpredictable.",lesson:"Measure customer acquisition cost and conversion."},
+  {label:"Do nothing and hope foot traffic improves",why:"Avoiding spending protects cash briefly, but it does not address the demand problem.",d:{cash:0,trust:-2,morale:0,reputation:-1,growth:-4},immediate:"Cash stays put, but fewer new customers discover the shop.",lesson:"Preserving cash matters, but inaction has a cost."}]},
+ {title:"A supplier offers a deal",story:"A supplier offers 30% off if you buy a large quantity of seasonal inventory today. The discount is attractive, but some products may not sell.",options:[
+  {label:"Buy the maximum quantity to get the discount",why:"A lower unit cost does not help if stock sits unsold and cash is tied up.",d:{cash:-4000,trust:-1,morale:0,reputation:0,growth:-2},immediate:"Your unit costs fall, but a large part of your cash is locked in inventory.",lesson:"Inventory turnover and cash flow matter more than a headline discount."},
+  {label:"Reject the deal without checking demand",why:"Avoiding risk protects cash, but you may miss a profitable opportunity.",d:{cash:0,trust:0,morale:0,reputation:0,growth:-2},immediate:"You retain cash but learn little about the products' potential.",lesson:"Risk management is not the same as avoiding every risk."},
+  {label:"Negotiate a smaller order or staged deliveries",why:"A smaller commitment preserves flexibility while testing demand and negotiating favorable terms.",d:{cash:-1200,trust:1,morale:0,reputation:1,growth:5},immediate:"You secure a partial discount and limit your inventory exposure.",lesson:"Negotiate terms that protect working capital."},
+  {label:"Borrow money to buy all the inventory",why:"Debt magnifies the cost of a bad demand forecast and adds repayment obligations.",d:{cash:-500,trust:0,morale:-1,reputation:-1,growth:0},immediate:"You obtain the stock, but loan obligations reduce future flexibility.",lesson:"Debt should support a credible return, not just a bargain."}]},
+ {title:"An employee raises a concern",story:"Your most experienced employee says the schedule is exhausting the team. You are busy and worry that hiring help will raise costs.",options:[
+  {label:"Listen, review workloads, and adjust the schedule",why:"Addressing the root cause can reduce burnout, mistakes, and turnover.",d:{cash:-400,trust:3,morale:9,reputation:2,growth:3},immediate:"Scheduling takes time and some money, but the team feels heard.",lesson:"Employee experience affects customer experience."},
+  {label:"Tell everyone to work harder until sales improve",why:"Pressure may raise output briefly, but fatigue and resentment often increase errors and turnover.",d:{cash:0,trust:-3,morale:-12,reputation:-4,growth:-3},immediate:"You save money now, but morale and service begin to deteriorate.",lesson:"Labor costs are only part of the cost of staffing decisions."},
+  {label:"Hire two full-time employees immediately",why:"Extra capacity may help, but hiring before assessing workload and demand can create fixed costs you cannot support.",d:{cash:-2200,trust:1,morale:3,reputation:1,growth:2},immediate:"Workloads ease, though payroll rises before its return is clear.",lesson:"Match staffing levels to workload and sustainable revenue."},
+  {label:"Offer a one-time bonus but change nothing else",why:"Recognition helps, but a bonus does not solve a persistent scheduling problem.",d:{cash:-600,trust:2,morale:3,reputation:1,growth:0},immediate:"The team appreciates the gesture, but the underlying strain remains.",lesson:"Treat root causes, not just symptoms."}]},
+ {title:"A customer complains publicly",story:"A customer posts a negative review after receiving a personalized gift later than promised. Other potential customers are reading the review.",options:[
+  {label:"Argue with the customer and blame shipping",why:"Defensiveness makes the business look unaccountable, even if a supplier contributed to the delay.",d:{cash:0,trust:-8,morale:-2,reputation:-10,growth:-4},immediate:"The argument draws attention to the complaint and damages credibility.",lesson:"Public responses are part of your brand."},
+  {label:"Ignore the review completely",why:"Some complaints fade, but silence leaves the customer's account unanswered and can suggest indifference.",d:{cash:0,trust:-4,morale:0,reputation:-4,growth:-2},immediate:"The immediate workload stays low, but trust remains damaged.",lesson:"Reputation management requires judgment and follow-through."},
+  {label:"Apologize, contact the customer privately, and offer a fair remedy",why:"A specific apology and proportionate remedy demonstrate accountability and may recover the relationship.",d:{cash:-250,trust:9,morale:1,reputation:8,growth:3},immediate:"You incur a small cost but have a chance to recover the customer and reassure observers.",lesson:"Service recovery can protect long-term customer value."},
+  {label:"Give every customer a 50% discount",why:"A blanket discount is costly and may reward behavior unrelated to the actual failure.",d:{cash:-1500,trust:2,morale:-1,reputation:1,growth:-3},immediate:"Some customers respond positively, but your margins take a hit.",lesson:"Make remedies fair, targeted, and financially sustainable."}]},
+ {title:"A competitor cuts prices",story:"The larger shop across town launches a sale and begins advertising lower prices. Several regulars ask whether you will match it.",options:[
+  {label:"Match every price, regardless of margin",why:"Price matching without cost analysis can turn a revenue problem into a loss-making business.",d:{cash:-1800,trust:1,morale:-1,reputation:0,growth:-4},immediate:"You retain some price-sensitive shoppers, but earn less on each sale.",lesson:"Know your contribution margin and break-even point."},
+  {label:"Explain your quality and service, and test a focused value offer",why:"Differentiation protects pricing power, while a targeted offer helps customers see value without discounting everything.",d:{cash:-350,trust:4,morale:0,reputation:5,growth:6},immediate:"You retain more margin and learn which customers value your strengths.",lesson:"Compete on value where possible, not price alone."},
+  {label:"Publicly criticize the competitor",why:"Attacking another business rarely proves your value and can make your brand look insecure.",d:{cash:0,trust:-2,morale:-1,reputation:-5,growth:-2},immediate:"The dispute attracts attention but risks alienating customers.",lesson:"Build your own position rather than relying on an opponent's weakness."},
+  {label:"Stop promoting the shop until the sale ends",why:"Waiting avoids a price war but sacrifices opportunities to communicate your unique offer.",d:{cash:0,trust:-2,morale:0,reputation:-2,growth:-5},immediate:"You avoid discounting but become less visible.",lesson:"A competitor's move should inform your strategy, not dictate it."}]},
+ {title:"A chance to expand",story:"A local event organizer offers you a booth at a popular weekend market. The fee is $1,000, and you must prepare extra stock. Your recent marketing results and cash position now matter.",options:[
+  {label:"Pay the fee and produce as much stock as possible",why:"A large commitment without demand estimates creates inventory and event risk.",d:{cash:-2200,trust:0,morale:-1,reputation:1,growth:0},immediate:"You gain a market presence but expose cash to uncertain sales.",lesson:"Estimate break-even sales before committing."},
+  {label:"Decline because every new opportunity is risky",why:"Caution is sensible when liquidity is low, but blanket rejection can block valuable low-cost experiments.",d:{cash:0,trust:0,morale:0,reputation:0,growth:-4},immediate:"You preserve cash and miss a potential customer acquisition channel.",lesson:"Evaluate risk and expected return rather than fear alone."},
+  {label:"Estimate break-even, pre-promote, and limit event inventory",why:"Planning the downside and measuring demand makes the experiment more informative and less dangerous.",d:{cash:-850,trust:3,morale:0,reputation:4,growth:8},immediate:"You test a new sales channel with a manageable budget.",lesson:"Use small experiments to find scalable opportunities."},
+  {label:"Take out a short-term loan to fund a premium booth",why:"Borrowing increases the cost of an uncertain event and makes a weak outcome more damaging.",d:{cash:-300,trust:0,morale:-1,reputation:2,growth:1},immediate:"You secure a stronger booth but take on a repayment obligation.",lesson:"Financing costs must be justified by realistic returns."}]},
+ {title:"Your team makes a mistake",story:"A rush order is packed incorrectly. Fixing it will cost money, and the team says the process is confusing.",options:[
+  {label:"Deduct the loss from the employee's pay",why:"Punishment can destroy trust and may violate wage laws. It also fails to correct the process.",d:{cash:0,trust:-5,morale:-10,reputation:-4,growth:-3},immediate:"Employees become guarded and may stop reporting problems.",lesson:"Check applicable labor law and fix process failures rather than defaulting to blame."},
+  {label:"Refund the customer and review the workflow with the team",why:"The refund repairs immediate harm, while process analysis reduces the chance of repeat errors.",d:{cash:-350,trust:5,morale:6,reputation:4,growth:4},immediate:"You absorb a cost but improve customer recovery and team learning.",lesson:"Use root-cause analysis and corrective action."},
+  {label:"Tell staff to be more careful without changing the process",why:"Reminders may help briefly, but ambiguous instructions remain ambiguous.",d:{cash:-100,trust:-1,morale:-3,reputation:-2,growth:-2},immediate:"The team tries harder, but similar mistakes remain possible.",lesson:"Reliable systems outperform repeated reminders."},
+  {label:"Stop accepting custom orders",why:"This removes a source of errors but also cuts off a potential differentiator and revenue stream.",d:{cash:-100,trust:0,morale:1,reputation:-1,growth:-6},immediate:"Work becomes simpler, but some customers lose a reason to choose you.",lesson:"Improve a profitable process before abandoning the offer."}]},
+ {title:"Cash gets tight",story:"A slow sales week and upcoming bills put pressure on your cash. You must pay suppliers, cover payroll, and keep enough stock to operate.",options:[
+  {label:"Delay payroll to preserve cash",why:"Late wages damage trust and may violate employment law. They can trigger serious legal and retention consequences.",d:{cash:500,trust:-8,morale:-15,reputation:-8,growth:-8},immediate:"You keep cash temporarily, but create a major legal and employee-relations risk.",lesson:"Payroll is not a casual financing tool."},
+  {label:"Take the first high-interest loan offered",why:"Fast money may prevent an immediate shortage, but expensive repayment can deepen the cash problem.",d:{cash:2500,trust:0,morale:-1,reputation:-1,growth:-3},immediate:"Cash rises now, but future cash flow becomes more constrained.",lesson:"Compare financing costs, timing, and repayment capacity."},
+  {label:"Forecast cash weekly, negotiate supplier terms, and cut low-return spending",why:"A short-term cash forecast makes obligations visible and allows earlier, targeted negotiation.",d:{cash:300,trust:2,morale:1,reputation:1,growth:4},immediate:"You identify avoidable spending and create a more manageable payment plan.",lesson:"Cash-flow management can matter more immediately than reported profit."},
+  {label:"Slash marketing, service, and staff hours equally",why:"Across-the-board cuts may save money quickly but can damage the very activities that generate sales.",d:{cash:700,trust:-5,morale:-6,reputation:-5,growth:-5},immediate:"Cash improves briefly while customer experience and future demand weaken.",lesson:"Prioritize cuts by return and strategic importance."}]},
+ {title:"An unexpected opportunity",story:"A respected local organization asks about a bulk order for an upcoming event. It could become a major client, but the delivery date is tight.",options:[
+  {label:"Accept immediately and promise any deadline they want",why:"Overpromising creates delivery and quality risk, especially when existing capacity is limited.",d:{cash:-900,trust:-3,morale:-4,reputation:1,growth:1},immediate:"The potential deal looks exciting, but execution risk rises.",lesson:"Confirm capacity before making commitments."},
+  {label:"Reject the order because it differs from normal sales",why:"Rejecting unfamiliar work avoids risk but also prevents learning about a potentially valuable market.",d:{cash:0,trust:0,morale:0,reputation:0,growth:-5},immediate:"Your current workload stays stable, but the opportunity disappears.",lesson:"Assess adjacent opportunities before dismissing them."},
+  {label:"Confirm costs and capacity, then propose a feasible delivery plan",why:"A clear scope, margin check, and realistic timeline protect both the relationship and operating capacity.",d:{cash:-500,trust:3,morale:2,reputation:4,growth:8},immediate:"You create a credible path to a larger customer relationship.",lesson:"Scope, capacity, and unit economics should precede commitment."},
+  {label:"Offer a very low price to beat every competitor",why:"An untested low price can make a high-volume order unprofitable and difficult to fulfill.",d:{cash:-1200,trust:1,morale:-2,reputation:0,growth:2},immediate:"You may win the order but risk losing money on every unit.",lesson:"Volume is valuable only when the economics work."}]},
+ {title:"A key employee may leave",story:"Your strongest employee receives another job offer. They tell you they like the business but want clearer development opportunities and fair recognition.",options:[
+  {label:"Promise a large raise immediately without reviewing finances",why:"An unsupported commitment can strain payroll and create expectations you cannot maintain.",d:{cash:-1500,trust:1,morale:4,reputation:0,growth:1},immediate:"The employee may feel valued, but your budget becomes tighter.",lesson:"Retention decisions must fit the financial model."},
+  {label:"Ask what would help, review pay and growth options, and agree on a realistic plan",why:"A direct conversation helps distinguish pay, recognition, workload, and advancement needs.",d:{cash:-400,trust:3,morale:8,reputation:2,growth:4},immediate:"You improve the chance of retention and clarify expectations.",lesson:"Retention combines compensation, respect, and development."},
+  {label:"Tell them everyone is replaceable",why:"Dismissal signals that contribution is not valued and may accelerate departure.",d:{cash:0,trust:-2,morale:-12,reputation:-4,growth:-4},immediate:"The employee becomes more likely to leave, and coworkers notice.",lesson:"Replacing experienced staff has real costs."},
+  {label:"Give the employee a new title but no additional clarity or support",why:"A title without meaningful responsibilities, development, or recognition may feel hollow.",d:{cash:-100,trust:0,morale:1,reputation:0,growth:0},immediate:"The immediate conversation is easier, but the underlying issue may remain.",lesson:"Make advancement concrete and credible."}]},
+ {title:"Your brand is getting attention",story:"A social post featuring your products is shared widely. Orders begin increasing, but your team is already busy. Your accumulated reputation and morale may shape the best response.",options:[
+  {label:"Spend heavily on ads while the post is trending",why:"Demand can fade, and paid promotion is risky before fulfillment capacity and conversion economics are understood.",d:{cash:-2500,trust:0,morale:-3,reputation:2,growth:2},immediate:"Reach expands, but orders may outpace your ability to fulfill them.",lesson:"Marketing and operations must grow together."},
+  {label:"Pause all new orders until the attention fades",why:"A complete shutdown protects capacity but wastes demand that could be managed with clear lead times or limited quantities.",d:{cash:0,trust:-3,morale:1,reputation:-2,growth:-5},immediate:"The team gets breathing room, but customers may turn elsewhere.",lesson:"Capacity constraints call for careful demand management."},
+  {label:"Set honest lead times, cap orders if needed, and monitor fulfillment quality",why:"Transparent expectations preserve trust while capacity limits protect quality and employee wellbeing.",d:{cash:-300,trust:5,morale:3,reputation:5,growth:7},immediate:"You convert attention into manageable demand and gather data for planning.",lesson:"Scale responsibly and protect the customer experience."},
+  {label:"Promise same-day service to everyone",why:"Unrealistic promises create delays, refunds, and reputational damage when the operation cannot keep up.",d:{cash:-800,trust:-7,morale:-8,reputation:-9,growth:-4},immediate:"Initial excitement turns into a fulfillment bottleneck.",lesson:"Never sell capacity you do not have."}]},
+ {title:"The next six months",story:"You must decide where to invest next. You have learned from your earlier decisions, and your business metrics now reflect the consequences of your choices.",options:[
+  {label:"Expand quickly into a second location",why:"Expansion multiplies fixed costs and operational complexity before the first location's model is proven.",d:{cash:-5000,trust:-1,morale:-3,reputation:2,growth:5},immediate:"You gain potential reach but put much more capital at risk.",lesson:"Prove repeatable unit economics before multiplying locations."},
+  {label:"Invest in repeat customers, documented processes, and measured experiments",why:"Retention, reliable delivery, and measured tests can improve the existing business before scaling.",d:{cash:-1200,trust:5,morale:5,reputation:4,growth:8},immediate:"Short-term cash falls, but the business becomes more repeatable and resilient.",lesson:"Build a system that works before scaling it."},
+  {label:"Stop investing and withdraw as much cash as possible",why:"Protecting personal liquidity can be sensible, but underinvestment may leave the business unable to compete or improve.",d:{cash:1500,trust:-1,morale:-1,reputation:-1,growth:-5},immediate:"Cash rises in the short term, while future growth options shrink.",lesson:"Balance owner withdrawals with business sustainability."},
+  {label:"Copy the most popular competitor's products and marketing",why:"Copying visible tactics without understanding the underlying customers or economics may waste money and weaken differentiation.",d:{cash:-900,trust:-1,morale:0,reputation:-3,growth:1},immediate:"You move quickly, but customers may see little reason to choose your shop.",lesson:"Use competitive research to learn, not blindly imitate."}]}
+];
+
+const $ = id => document.getElementById(id);
+const clamp = n => Math.max(0, Math.min(100, n));
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+function stage(){return turn<4?"Early stage":turn<8?"Building stage":"Growth stage";}
+function renderMetrics(){
+  $("cash-value").textContent=money(state.cash);
+  $("cash-caption").textContent=state.cash<3000?"Cash warning: protect essential payments":state.cash<8000?"Keep a close eye on upcoming bills":"Cash available for operations";
+  $("metric-list").innerHTML=metrics.map(m=>{
+    const value=state[m.key], color=value<30?"var(--red)":value<55?"#b58a25":"var(--green)";
+    return `<div class="metric"><div class="metric-head"><span>${m.label}</span><span class="metric-value">${value}/100</span></div><div class="bar"><span style="width:${value}%;background:${color}"></span></div></div>`;
+  }).join("");
+}
+function adjustedStory(q){
+  if(turn===5 && state.cash<5000) return "Your cash is running low. The market opportunity could put your business at risk. You need to protect liquidity while evaluating whether the event can pay for itself.";
+  if(turn===9 && state.morale<35) return "Your team is already under strain. The next decision could either give employees a reason to stay or push them closer to leaving.";
+  if(turn===10 && state.reputation>=70 && state.trust>=65) return "Your strong customer relationships have created an opportunity. People are paying attention, and you have earned some goodwill. Now you must turn it into sustainable business.";
+  if(turn===7 && state.cash<3000) return "Your cash reserves are dangerously low. Payroll and suppliers still need to be paid. A short-term fix can have long-term consequences.";
+  return q.story;
+}
+function renderQuestion(){
+  if(gameOver || turn>=questions.length){renderReport();return;}
+  const q=questions[turn];
+  $("question-area").classList.remove("hidden");$("report").classList.add("hidden");
+  $("decision-count").textContent=`DECISION ${turn+1} OF ${questions.length}`;
+  $("stage-tag").textContent=stage();
+  $("progress-bar").style.width=(turn/questions.length*100)+"%";
+  $("question-title").textContent=q.title;
+  $("question-story").textContent=adjustedStory(q);
+  $("options").innerHTML="";
+  $("result").classList.add("hidden");
+  q.options.forEach((o,i)=>{
+    const button=document.createElement("button");button.type="button";button.className="option";
+    const letter=document.createElement("span");letter.className="option-letter";letter.textContent="ABCD"[i];
+    const label=document.createElement("span");label.className="option-text";label.textContent=o.label;
+    button.append(letter,label);button.addEventListener("click",()=>choose(i));$("options").append(button);
+  });
+  renderMetrics();
+}
+function choose(index){
+  if(gameOver || history.length!==turn)return;
+  const q=questions[turn],o=q.options[index],d=o.d;
+  const old={...state};
+  // Compounding effects: existing trust, reputation, morale and growth alter the impact of later choices.
+  let trustDelta=d.trust+(d.reputation>0&&state.trust>=70?1:0);
+  let moraleDelta=d.morale+(d.morale<0&&state.morale<30?-2:0);
+  let reputationDelta=d.reputation+(d.reputation>0&&state.reputation>=75?1:0);
+  let growthDelta=d.growth+(d.growth>0&&state.growth>=75?1:0);
+  let cashDelta=d.cash+(d.cash<0&&state.trust>=75?Math.round(Math.abs(d.cash)*.05):0);
+  state.cash+=cashDelta;state.trust=clamp(state.trust+trustDelta);state.morale=clamp(state.morale+moraleDelta);state.reputation=clamp(state.reputation+reputationDelta);state.growth=clamp(state.growth+growthDelta);
+  const entry={turn:turn+1,title:q.title,letter:"ABCD"[index],choice:o.label,immediate:o.immediate,why:o.why,lesson:o.lesson,deltas:{cash:cashDelta,trust:trustDelta,morale:moraleDelta,reputation:reputationDelta,growth:growthDelta},metrics:{...state}};
+  history.push(entry);
+  [...$("options").querySelectorAll("button")].forEach(b=>b.disabled=true);
+  $("result-immediate").textContent=o.immediate;
+  $("result-why").textContent=o.why;
+  $("result-lesson").textContent=o.lesson;
+  const all=[{key:"cash",label:"Cash"},{key:"trust",label:"Customer Trust"},{key:"morale",label:"Team Morale"},{key:"reputation",label:"Brand Reputation"},{key:"growth",label:"Growth Potential"}];
+  $("delta-list").innerHTML=all.map(m=>{
+    const delta=entry.deltas[m.key],val=m.key==="cash"?money(state.cash):state[m.key]+"/100";
+    const display=m.key==="cash"?(delta>0?"+":"")+money(delta).replace("$","$"):(delta>0?"+":"")+delta;
+    const cls=delta>0?"up":delta<0?"down":"flat";
+    return `<div class="delta-row"><span>${m.label}: <strong>${val}</strong></span><span class="${cls}">${display}</span></div>`;
+  }).join("");
+  $("result").classList.remove("hidden");
+  $("progress-bar").style.width=((turn+1)/questions.length*100)+"%";
+  $("next-button").textContent=turn===questions.length-1?"View final report →":"Next decision →";
+  renderMetrics();
+  if(state.cash<=0 || (state.trust===0 && state.morale===0)){
+    gameOver=true;
+    $("next-button").textContent="View final report →";
+  }
+}
+function outcomeText(){
+  if(state.cash<=0)return {title:"The business ran out of cash",body:"Cornerstone Goods cannot cover its immediate cash needs. Operations may need to stop unless viable financing or a restructuring plan is available.",warning:true};
+  if(state.trust<20||state.morale<15||state.reputation<20)return {title:"The business is in crisis",body:"The shop may survive, but customer relationships, team stability, or reputation need urgent repair before growth is realistic.",warning:true};
+  if(state.cash>=10000&&state.trust>=65&&state.morale>=60&&state.reputation>=60&&state.growth>=65)return {title:"You built a resilient business",body:"You protected financial flexibility while earning trust and building a team that can support future growth.",warning:false};
+  if(state.cash>0&&state.trust>=40&&state.morale>=35&&state.reputation>=35)return {title:"The business survived",body:"You still have a foundation to build on, but some weaknesses could make the next setback costly. Focus on the weakest metric first.",warning:false};
+  return {title:"The business is struggling",body:"Some resources remain, but your decisions have left significant risks to address. Stabilize cash, repair relationships, and prioritize the issues most likely to threaten survival.",warning:true};
+}
+function score(){
+  const cashScore=clamp(state.cash/20000*100);
+  return Math.round((cashScore+state.trust+state.morale+state.reputation+state.growth)/5);
+}
+function renderReport(){
+  $("question-area").classList.add("hidden");$("report").classList.remove("hidden");
+  $("progress-bar").style.width="100%";
+  const outcome=outcomeText();
+  const finalMetrics=[{label:"Cash",value:money(state.cash)},{label:"Customer Trust",value:state.trust+"/100"},{label:"Team Morale",value:state.morale+"/100"},{label:"Brand Reputation",value:state.reputation+"/100"},{label:"Growth Potential",value:state.growth+"/100"}];
+  const lessons=history.map(h=>`<li><strong>${h.turn}. ${escapeHTML(h.title)} · Choice ${h.letter}</strong><span>${escapeHTML(h.choice)}</span><p>${escapeHTML(h.lesson)}</p></li>`).join("");
+  $("report").innerHTML=`<div class="eyebrow" style="color:var(--green)">Simulation complete</div><h2>${escapeHTML(outcome.title)}</h2><p>${escapeHTML(outcome.body)}</p><div class="outcome ${outcome.warning?"warning":""}"><strong>Final score</strong><div class="score">${score()}<span style="font-size:1.1rem;color:var(--muted)"> / 100</span></div><span class="small-muted">Equal weighting across cash health, trust, morale, reputation, and growth potential.</span></div><h3>Final business metrics</h3><div class="report-metrics">${finalMetrics.map(m=>`<div class="report-metric"><span>${m.label}</span><strong>${m.value}</strong></div>`).join("")}</div><h3>Lessons from your decisions</h3><ul class="history">${lessons||"<li>No decisions were recorded.</li>"}</ul><h3>Real-world business concepts</h3><ul class="concepts"><li><strong>Cash-flow management:</strong> a business can struggle even when sales look promising.</li><li><strong>Unit economics:</strong> discounts and high sales volume do not guarantee profit.</li><li><strong>Customer lifetime value:</strong> fair service recovery can protect future revenue.</li><li><strong>Employee retention:</strong> morale, workload, and respect affect performance and turnover.</li><li><strong>Brand equity:</strong> trust and reputation influence how customers respond to mistakes.</li><li><strong>Inventory risk:</strong> stock ties up cash until it sells.</li><li><strong>Opportunity cost:</strong> every decision uses resources that could have served another purpose.</li><li><strong>Scalable operations:</strong> build repeatable processes before expanding.</li></ul><p class="small-muted">All values and outcomes are illustrative, not financial forecasts or financial advice.</p><div class="actions"><button class="primary" id="restart-button">Play again</button><button class="secondary" id="copy-button">Copy my results</button></div><p id="copy-status" class="small-muted" role="status"></p>`;
+  $("restart-button").addEventListener("click",restart);
+  $("copy-button").addEventListener("click",copyResults);
+  renderMetrics();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function restart(){state={...initial};turn=0;history=[];gameOver=false;renderQuestion();window.scrollTo({top:0,behavior:"smooth"});}
+function copyResults(){
+  const lines=["Business Builder | Behind the Business",outcomeText().title,"Final score: "+score()+"/100","Cash: "+money(state.cash),"Customer Trust: "+state.trust+"/100","Team Morale: "+state.morale+"/100","Brand Reputation: "+state.reputation+"/100","Growth Potential: "+state.growth+"/100","","Decisions:",...history.map(h=>`${h.turn}. ${h.title}: ${h.letter}. ${h.choice} | Lesson: ${h.lesson}`)];
+  const text=lines.join("\n"),status=$("copy-status");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>status.textContent="Results copied.").catch(()=>fallbackCopy(text,status));}
+  else fallbackCopy(text,status);
+}
+function fallbackCopy(text,status){
+  const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();
+  try{const ok=document.execCommand("copy");status.textContent=ok?"Results copied.":"Copy was not available. You can select and copy your results manually.";}catch(e){status.textContent="Copy was not available. You can select and copy your results manually.";}
+  area.remove();
+}
+$("next-button").addEventListener("click",()=>{
+  if(gameOver||turn===questions.length-1){renderReport();return;}
+  turn++;renderQuestion();window.scrollTo({top:0,behavior:"smooth"});
+});
+renderQuestion();
+</script>
+</body>
+</html>
